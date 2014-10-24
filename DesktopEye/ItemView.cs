@@ -22,6 +22,7 @@ namespace DesktopEye
 
 
         private Process process;
+        private frmMain m;
 
         public ItemView()
         {
@@ -42,15 +43,20 @@ namespace DesktopEye
         {
             this.process = process;
         }
+        public void setCallback(frmMain m)
+        {
+            this.m = m;
+        }
 
         public void setAppFocus(bool focus)
         {
             if (focus) {
                 // TODO: Should detect window state and not force windowstate as normal.
                 // http://msdn.microsoft.com/en-us/library/windows/desktop/ms633548(v=vs.85).aspx
-                ShowWindow(process.MainWindowHandle, 5);
-                SetForegroundWindow(process.MainWindowHandle);
+                //ShowWindow(process.MainWindowHandle, 3);
+                //SetForegroundWindow(process.MainWindowHandle);
                 this.BackColor = System.Drawing.SystemColors.Highlight;
+                m.updateSelectedProcess(process);
             }
             else
             {
@@ -60,6 +66,11 @@ namespace DesktopEye
 
 
         private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void ItemView_Load(object sender, EventArgs e)
         {
 
         }

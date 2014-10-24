@@ -20,6 +20,9 @@ namespace DesktopEye
     {
 
         [DllImport("user32.dll")]
+        static extern int ShowWindow(IntPtr hWnd, int nCmdShow);
+
+        [DllImport("user32.dll")]
         static extern bool SetForegroundWindow(IntPtr hWnd);
 
         [DllImport("user32.dll", SetLastError = true)]
@@ -43,6 +46,10 @@ namespace DesktopEye
             return pid;
         }
 
+
+        
+
+
         #region Eye tracking variables
         private System.Net.Sockets.TcpClient socket;
         private System.Threading.Thread incomingThread;
@@ -50,11 +57,17 @@ namespace DesktopEye
         private Boolean isRunning;
         #endregion
 
+        private int mouseX, mouseY = 0;
+
         private ArrayList listWindowInfo;
         private ArrayList listItemViews;
         private int screenWidth;
         private int screenHeight;
         private bool formVisible = false;
+
+        private frmTriggerArea fta;
+
+        private Process selectedProcess;
 
         public frmMain()
         {
@@ -82,6 +95,7 @@ namespace DesktopEye
 
         private void frmMain_Load(object sender, EventArgs e)
         {
+            fta = new frmTriggerArea();
             screenWidth = Screen.PrimaryScreen.Bounds.Width;
             screenHeight = Screen.PrimaryScreen.Bounds.Height;
 
@@ -91,6 +105,8 @@ namespace DesktopEye
             this.Left = 0;
 
             setFormVisability(true);
+
+
         }
 
         private void buildControlls(ArrayList listWindowInfo)
@@ -104,11 +120,17 @@ namespace DesktopEye
                 iv.setLabel(wi.name);
                 iv.setImage(wi.image);
                 iv.setProcess(wi.process);
-                iv.Top = screenHeight - iv.Height;
+                iv.Top = screenHeight - iv.Height - 5;
                 iv.Left = i * (iv.Width + 5) + 5;
+                iv.setCallback(this);
                 this.Controls.Add(iv);
                 listItemViews.Add(iv);
             }
+        }
+
+        public void updateSelectedProcess(Process p)
+        {
+            this.selectedProcess = p;
         }
 
         private bool EnumTheWindows(IntPtr hWnd, IntPtr lParam)
@@ -236,6 +258,12 @@ namespace DesktopEye
                         int xOff = (int)avg.GetValue("x");
                         int yOff = (int)avg.GetValue("y");
 
+                        if (tmrGetMousePosition.Enabled)
+                        {
+                            xOff = mouseX;
+                            yOff = mouseY;
+                        }
+
                         if (formVisible)
                         {
 
@@ -311,13 +339,31 @@ namespace DesktopEye
                 getWindowsAndBuild();
                 this.Opacity = 1;
                 formVisible = true;
+                fta.Hide();
             }
             else
             {
+                // Move selected application to top on exit.
+                if (selectedProcess != null)
+                {
+                    ShowWindow(selectedProcess.MainWindowHandle, 3);
+                    SetForegroundWindow(selectedProcess.MainWindowHandle);
+                }
+
+
                 this.Opacity = 0;
                 formVisible = false;
+                fta.Show();
             }
             
+        }
+
+        private void tmrGetMousePosition_Tick(object sender, EventArgs e)
+        {
+            Point p = MousePositionInfo.GetCursorPosition();
+            mouseX = p.X;
+            mouseY = p.Y;
+            Console.WriteLine("X " + mouseX + " Y " + mouseY);
         }
 
         
