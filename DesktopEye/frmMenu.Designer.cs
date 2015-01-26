@@ -1,6 +1,6 @@
 ﻿namespace DesktopEye
 {
-    partial class frmMain
+    partial class frmMenu
     {
         /// <summary>
         /// Required designer variable.
@@ -34,9 +34,10 @@
             // 
             // tmrGetMousePosition
             // 
+            this.tmrGetMousePosition.Enabled = true;
             this.tmrGetMousePosition.Tick += new System.EventHandler(this.tmrGetMousePosition_Tick);
             // 
-            // frmMain
+            // frmMenu
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -44,8 +45,9 @@
             this.ClientSize = new System.Drawing.Size(567, 128);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Margin = new System.Windows.Forms.Padding(2);
-            this.Name = "frmMain";
-            this.Text = "Form1";
+            this.Name = "frmMenu";
+            this.ShowInTaskbar = false;
+            this.Text = "frmMenu";
             this.TopMost = true;
             this.TransparencyKey = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.Load += new System.EventHandler(this.frmMain_Load);

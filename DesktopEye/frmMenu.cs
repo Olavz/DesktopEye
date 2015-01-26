@@ -16,7 +16,7 @@ using System.Windows.Shell;
 
 namespace DesktopEye
 {
-    public partial class frmMain : Form
+    public partial class frmMenu : Form
     {
 
         [DllImport("user32.dll")]
@@ -69,13 +69,14 @@ namespace DesktopEye
 
         private Process selectedProcess;
 
-        public frmMain()
+        public frmMenu()
         {
             InitializeComponent();
             listWindowInfo = new ArrayList();
             listItemViews = new ArrayList();
 
             Connect();
+            
         }
 
         private void getWindowsAndBuild()
@@ -83,6 +84,7 @@ namespace DesktopEye
             // Clear lists
             listItemViews.Clear();
             listWindowInfo.Clear();
+
 
             this.Controls.Clear();
 
@@ -111,7 +113,7 @@ namespace DesktopEye
 
         private void buildControlls(ArrayList listWindowInfo)
         {
-            listItemViews.Clear();
+
             for (int i = 0; i < listWindowInfo.Count; i++)
             {
                 WindowInfo wi = (WindowInfo)listWindowInfo[i];
@@ -135,7 +137,6 @@ namespace DesktopEye
 
         private bool EnumTheWindows(IntPtr hWnd, IntPtr lParam)
         {
-
             int size = GetWindowTextLength(hWnd);
             if (size++ > 0 && IsWindowVisible(hWnd))
             {
@@ -149,13 +150,13 @@ namespace DesktopEye
                 Process p = Process.GetProcessById((int)id);
                 wi.process = p;
 
-                
-
                 Icon ico = Icon.ExtractAssociatedIcon(p.MainModule.FileName);
                 wi.image = ico.ToBitmap();
 
-                
-                // Dont want to show process for explorer or DesktopEye, so we skip them.
+                /* 
+                 * Dont want to show process for explorer 
+                 * or DesktopEye, so we skip them. 
+                 */ 
                 switch (wi.process.ProcessName)
                 {
                     case "explorer":
@@ -163,6 +164,8 @@ namespace DesktopEye
                     case "DesktopEye.vshost":
                         return true;
                     case "DesktopEye":
+                        return true;
+                    case "EyeTribe":
                         return true;
                 }
 
@@ -287,7 +290,7 @@ namespace DesktopEye
                                     
                                         if (InvokeRequired)
                                         {
-                                            this.Invoke(new Action(() => setAppFocus(i)));
+                                            this.Invoke(new Action(() => setAppFocusFromIndex(i)));
                                         }
                                     }
                                 }
@@ -321,7 +324,7 @@ namespace DesktopEye
             }
         }
 
-        private void setAppFocus(int index)
+        private void setAppFocusFromIndex(int index)
         {
             for (int i = 0; i < listItemViews.Count; i++)
             {
@@ -346,6 +349,8 @@ namespace DesktopEye
                 // Move selected application to top on exit.
                 if (selectedProcess != null)
                 {
+                    // TODO: Should detect window state and not force windowstate as normal.
+                    // http://msdn.microsoft.com/en-us/library/windows/desktop/ms633548(v=vs.85).aspx
                     ShowWindow(selectedProcess.MainWindowHandle, 3);
                     SetForegroundWindow(selectedProcess.MainWindowHandle);
                 }
@@ -363,7 +368,6 @@ namespace DesktopEye
             Point p = MousePositionInfo.GetCursorPosition();
             mouseX = p.X;
             mouseY = p.Y;
-            Console.WriteLine("X " + mouseX + " Y " + mouseY);
         }
 
         

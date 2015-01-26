@@ -40,8 +40,7 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(136, 28);
             this.label1.TabIndex = 0;
-            this.label1.Text = "Test";
-            this.label1.Click += new System.EventHandler(this.label1_Click);
+            this.label1.Text = "Name";
             // 
             // pictureBox1
             // 
@@ -63,7 +62,6 @@
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "ItemView";
             this.Size = new System.Drawing.Size(140, 109);
-            this.Load += new System.EventHandler(this.ItemView_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
 

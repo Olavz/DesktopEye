@@ -46,9 +46,6 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="TETCSharpClient">
-      <HintPath>..\..\..\..\..\Desktop\TETCSharpClient-master\TETCSharpClient\bin\Debug\TETCSharpClient.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="frmMenu.cs">
